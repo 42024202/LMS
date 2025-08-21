@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Виртуальное окружение
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Логи и отладка
+*.log
+*.pot
+*.pyc
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Кэш
+*.sqlite3
+*.db
+.cache/
+.mypy_cache/
+.pytest_cache/
+__pypackages__/
+
+# Сборка и дистрибутивы
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# Docker
+*.pid
+*.seed
+*.pid.lock
+
+# Тестовые артефакты
+.coverage
+htmlcov/
+.tox/
+
