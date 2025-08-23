@@ -34,7 +34,7 @@ class MyUserManager(BaseUserManager):
 
 
 class MyUser(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(max_length=50)
+    username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(max_length=50, unique=True)
     avatar = models.ImageField(upload_to="avatar", null=True, blank=True)
     role = models.CharField(max_length=50, choices=MyUserRoleEnum.choices, default=MyUserRoleEnum.STANDARD_USER)
