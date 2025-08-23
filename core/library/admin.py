@@ -4,21 +4,16 @@ from .models import Book, CourseBook
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
     list_display = ("title", "author", "subject", "education_level", "is_required")
-    list_filter = ("subject", "education_level", "is_required", "created_at")
+    list_filter = ("subject", "education_level", "is_required")
     search_fields = ("title", "author", "subject", "isbn")
-    readonly_fields = ("created_at", "updated_at")
     fieldsets = (
         ("Основная информация", {
             "fields": ("title", "author", "subject", "education_level")
         }),
         ("Дополнительная информация", {
             "fields": ("isbn", "file", "external_link", "is_required")
-        }),
-        ("Даты", {
-            "fields": ("created_at", "updated_at"),
-            "classes": ("collapse",)
-        }),
-    )
+        }))
+     
 
 @admin.register(CourseBook)
 class CourseBookAdmin(admin.ModelAdmin):

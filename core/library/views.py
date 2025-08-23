@@ -3,7 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Book, CourseBook
 from .serializers import BookSerializer, CourseBookSerializer
 from .permissions import IsAdminOrReadOnly
-from core.pagination import CustomPagination
+from common.pagination import CustomPagination
 
 class BookListCreateView(generics.ListCreateAPIView):
     queryset = Book.objects.all()

@@ -1,4 +1,5 @@
 from django.db import models
+from user.models import MyUser
 
 class Payment(models.Model):
     STATUS_CHOICES = [
@@ -15,7 +16,7 @@ class Payment(models.Model):
     ]
 
     user = models.ForeignKey(
-        "user.User",
+        MyUser,
         on_delete=models.CASCADE,
         related_name="payments",
         verbose_name="Пользователь"
@@ -95,7 +96,7 @@ class PaymentStatusHistory(models.Model):
         verbose_name="Новый статус"
     )
     changed_by = models.ForeignKey(
-        "user.User",
+        MyUser,
         on_delete=models.SET_NULL,
         null=True,
         related_name="changed_statuses",
@@ -113,3 +114,4 @@ class PaymentStatusHistory(models.Model):
         verbose_name = 'История статуса платежа'
         verbose_name_plural = 'Истории статусов платежей'
         ordering = ['-changed_at']
+

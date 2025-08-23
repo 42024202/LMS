@@ -26,5 +26,5 @@ urlpatterns = [
     path('api/payment/', include('payment.urls')),
 ]
 
-handler404 = NotFoundView.as_view()
+#handler404 = NotFoundView.as_view()
 
