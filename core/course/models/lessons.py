@@ -33,6 +33,9 @@ class Lesson(models.Model):
             )
     
     meeting_url = models.TextField(
+        default=None,
+        blank=True,
+        null=True,
         verbose_name='Ссылка на встречу'
             )
 
