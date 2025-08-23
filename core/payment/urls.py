@@ -14,3 +14,4 @@ urlpatterns = [
     # Statistics (admin only)
     path('stats/', views.payment_stats, name='payment-stats'),
 ]
+

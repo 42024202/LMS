@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Payment
-from user.models import User
-from course.models import Course
+from user.models import MyUser as User
+from course.models.course import Course
 
 class PaymentSerializer(serializers.ModelSerializer):
     user_email = serializers.EmailField(source='user.email', read_only=True)
