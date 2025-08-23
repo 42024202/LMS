@@ -160,7 +160,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-<<<<<<< Updated upstream
+#<<<<<<< Updated upstream
 AUTH_USER_MODEL = 'user.MyUser'
 
 
@@ -172,5 +172,5 @@ EMAIL_USE_SSL = False
 EMAIL_HOST_USER = 'tdastan.312@gmail.com'
 EMAIL_HOST_PASSWORD = 'qmcr fckv gcpp dcur'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-=======
->>>>>>> Stashed changes
+#=======
+#>>>>>>> Stashed changes

@@ -1,40 +1,85 @@
 from rest_framework import serializers
 from .models import Book, CourseBook
-from django.utils import timezone
 from course.models import Course
 
 
 class BookSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Book
-        fields = "__all__"
-
-
-class CourseBookSerializer(serializers.ModelSerializer):
-    book = BookSerializer(read_only=True)
-    course = serializers.PrimaryKeyRelatedField(
-        queryset=Course.objects.all(),
-        write_only=True
+    # Вычисляемое поле для отображения
+    education_level_display = serializers.CharField(
+        source='get_education_level_display',
+        read_only=True
     )
 
     class Meta:
-        model = CourseBook
-        fields = ["id", "course", "book", "title", "author", "name", "genre", "year_of_publication", "url"]
-
-    def validate_year_of_publication(self, value):
-        if value and value > timezone.now().year:
-            raise serializers.ValidationError("Год публикации не может быть в будущем")
-        if value and value < 1000:
-            raise serializers.ValidationError("Год публикации слишком ранний")
-        return value
+        model = Book
+        fields = [
+            'id', 'title', 'author', 'subject', 'education_level',
+            'education_level_display', 'isbn', 'file', 'external_link',
+            'is_required'
+        ]
+        read_only_fields = ['id']
 
     def validate_title(self, value):
+        """Валидация названия учебника"""
         if len(value.strip()) < 2:
             raise serializers.ValidationError("Название слишком короткое")
         return value.strip()
 
-    # Общая валидация объекта
+    def validate_subject(self, value):
+        """Валидация названия предмета"""
+        if len(value.strip()) < 2:
+            raise serializers.ValidationError("Название предмета слишком короткое")
+        return value.strip()
+
+
+class CourseBookSerializer(serializers.ModelSerializer):
+    # Для чтения - полные данные учебника
+    book = BookSerializer(read_only=True)
+
+    # Для чтения - название курса
+    course_name = serializers.CharField(
+        source='course.name',
+        read_only=True
+    )
+
+    # Для записи - только ID курса
+    course_id = serializers.PrimaryKeyRelatedField(
+        queryset=Course.objects.all(),
+        write_only=True,
+        source='course'
+    )
+
+    class Meta:
+        model = CourseBook
+        fields = [
+            'id', 'course_id', 'course_name', 'book',
+            'reading_order', 'recommended_chapters', 'study_hours'
+        ]
+        read_only_fields = ['id']
+
+    def validate_reading_order(self, value):
+        """Валидация порядка изучения"""
+        if value < 0:
+            raise serializers.ValidationError("Порядок изучения не может быть отрицательным")
+        return value
+
+    def validate_study_hours(self, value):
+        """Валидация часов на изучение"""
+        if value < 0:
+            raise serializers.ValidationError("Часы на изучение не могут быть отрицательными")
+        if value > 1000:
+            raise serializers.ValidationError("Слишком много часов на изучение")
+        return value
+
     def validate(self, data):
-        if data.get('genre') == 'Научная фантастика' and data.get('year_of_publication') < 1900:
-            raise serializers.ValidationError("Научная фантастика не могла быть опубликована до 1900 года")
+        """Общая валидация"""
+        # Проверяем, что учебник соответствует уровню курса
+        course = data.get('course')
+        book = self.instance.book if self.instance else None
+
+        if course and book:
+            # Здесь можно добавить логику проверки соответствия
+            # Например: if course.level != book.education_level:
+            pass
+
         return data

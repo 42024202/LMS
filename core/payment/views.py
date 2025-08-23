@@ -1,28 +1,38 @@
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, filters
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Payment
 from .serializers import PaymentSerializer
 from rest_framework.decorators import api_view, permission_classes
 from .services import MockPaymentGateway
+from django.db.models import Sum
+
 
 class PaymentListCreateView(generics.ListCreateAPIView):
-    #serializer_class = PaymentSerializer
+    serializer_class = PaymentSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['status', 'payment_method']
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    ordering_fields = ['created_at', 'amount', 'status']
+    ordering = ['-created_at']
+    filterset_fields = ['status', 'payment_method', 'user']
+    pagination_class = None
 
     def get_queryset(self):
-        if self.request.user.is_staff:
-            return Payment.objects.all()
-        return Payment.objects.filter(user=self.request.user)
+        queryset = Payment.objects.all() if self.request.user.is_staff \
+            else Payment.objects.filter(user=self.request.user)
+
+        status_filter = self.request.query_params.get('status')
+        if status_filter:
+            queryset = queryset.filter(status=status_filter)
+
+        return queryset
 
     def perform_create(self, serializer):
         # Автоматически сохраняем текущего пользователя
         serializer.save(user=self.request.user, status='pending')
 
 class PaymentDetailView(generics.RetrieveUpdateDestroyAPIView):
-    #serializer_class = PaymentSerializer
+    serializer_class = PaymentSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
@@ -94,6 +104,43 @@ def payment_status(request, pk):
             'created_at': payment.created_at,
             'confirmed_at': payment.confirmed_at
         })
+
+    except Payment.DoesNotExist:
+        return Response(
+            {'error': 'Платеж не найден'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAdminUser])
+def payment_stats(request):
+    total = Payment.objects.count()
+    completed = Payment.objects.filter(status='completed').count()
+    revenue = Payment.objects.filter(status='completed').aggregate(Sum('amount'))
+
+    return Response({
+        'total_payments': total,
+        'completed_payments': completed,
+        'total_revenue': revenue['amount__sum'] or 0
+    })
+
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAdminUser])
+def refund_payment(request, pk):
+    try:
+        payment = Payment.objects.get(pk=pk)
+
+        # Проверяем, можно ли сделать возврат
+        if payment.status != 'completed':
+            return Response(
+                {'error': 'Возврат возможен только для завершенных платежей'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        payment.status = 'refunded'
+        payment.save()
+        return Response({'status': 'refunded'})
 
     except Payment.DoesNotExist:
         return Response(

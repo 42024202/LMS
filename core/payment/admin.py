@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Payment
+from .models import Payment, PaymentStatusHistory
 
 
 @admin.register(Payment)
@@ -56,3 +56,18 @@ class PaymentAdmin(admin.ModelAdmin):
         self.message_user(request, f"{updated} платежей помечены как возвращенные")
 
     mark_as_refunded.short_description = "Пометить выбранные платежи как возвращенные"
+
+@admin.register(PaymentStatusHistory)
+class PaymentStatusHistoryAdmin(admin.ModelAdmin):
+    list_display = ['payment', 'old_status', 'new_status', 'changed_by', 'changed_at']
+    list_filter = ['old_status', 'new_status', 'changed_at']
+    search_fields = ['payment__transaction_id', 'payment__user__username', 'changed_by__username']
+    readonly_fields = ['payment', 'old_status', 'new_status', 'changed_by', 'changed_at']
+    list_per_page = 20
+
+    def has_add_permission(self, request):
+        return False  # Историю нельзя создавать вручную
+
+    def has_delete_permission(self, request, obj=None):
+        return False  # Историю нельзя удалять
+
