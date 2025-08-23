@@ -7,19 +7,19 @@ class Book(models.Model):
         max_length=255,
         verbose_name="Название учебника",
         help_text="Полное название учебного пособия"
-    )
+            )
     author = models.CharField(
         max_length=255,
         verbose_name="Автор",
         help_text="Автор или редактор учебника"
-    )
+            )
 
     # Учебные характеристики
     subject = models.CharField(
         max_length=100,
         verbose_name="Предмет/Дисциплина",
         help_text="Учебная дисциплина, к которой относится учебник"
-    )
+            )
     education_level = models.CharField(
         max_length=50,
         choices=[
@@ -31,7 +31,7 @@ class Book(models.Model):
         default='bachelor',
         verbose_name="Уровень образования",
         help_text="Для какого уровня обучения предназначен учебник"
-    )
+            )
 
     # Практические поля для LMS
     isbn = models.CharField(
@@ -40,14 +40,16 @@ class Book(models.Model):
         null=True,
         verbose_name="ISBN",
         help_text="Международный стандартный номер книги"
-    )
+            )
+
     file = models.FileField(
         upload_to='books/',
         blank=True,
         null=True,
         verbose_name="Файл учебника",
         help_text="Электронная версия учебника"
-    )
+            )
+
     external_link = models.URLField(
         blank=True,
         null=True,

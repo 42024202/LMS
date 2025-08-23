@@ -13,7 +13,7 @@ class CourseStudent(models.Model):
             verbose_name='Курс'
             )
 
-    student = models.ForeignKey(
+    user = models.ForeignKey(
             MyUser,
             on_delete=models.CASCADE,
             related_name='courses',
@@ -37,7 +37,7 @@ class CourseStudent(models.Model):
             )
 
     def __str__(self):
-        return f'{self.student} - {self.course}'
+        return f'{self.user.username} - {self.course.title}'
     
     class Meta:
         verbose_name = 'Студент'
@@ -45,8 +45,8 @@ class CourseStudent(models.Model):
 
         constraints = [
             models.UniqueConstraint(
-                fields=["course", "student"],
-                name="uniq_course_student"
+                fields=["course", "user"],
+                name="uniq_course_user"
             )
         ]
 

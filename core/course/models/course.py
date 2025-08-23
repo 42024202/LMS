@@ -23,14 +23,20 @@ class Course(models.Model):
             )
 
     duration = models.PositiveSmallIntegerField(
-            verbose_name='Длительность курса'
+            verbose_name='Длительность курса в месяцах'
             )
     
     starts_at = models.DateField(
-            verbose_name='Начало курса'
+            blank=True,
+            null=True,
+            verbose_name='Начало курса',
+            default=None
             )
 
     end_at = models.DateField(
+            blank=True,
+            null=True,
+            default=None,
             verbose_name='Конец курса'
             )
 

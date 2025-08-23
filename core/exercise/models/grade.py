@@ -1,16 +1,16 @@
 from __future__ import annotations
 from django.db import models
-from .exercises import Exercise
+from .submission import Submission
 from django.core.validators import MinValueValidator, MaxValueValidator
 from user.models import MyUser
 
 
 class Grade(models.Model):
-    exercise = models.ForeignKey(
-            Exercise,
+    submission = models.ForeignKey(
+            Submission,
             on_delete=models.CASCADE,
             related_name='grades',
-            verbose_name='Задание'
+            verbose_name='Решение'
             )
 
     student = models.ForeignKey(
@@ -35,7 +35,7 @@ class Grade(models.Model):
             )
 
     def __str__(self):
-        return f'{self.exercise} - {self.score}'
+        return f'{self.submission} - {self.score}'
 
     class Meta:
         verbose_name = 'Оценка задания'

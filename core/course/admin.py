@@ -52,7 +52,7 @@ class CourseInstructorAdmin(admin.ModelAdmin):
 
 @admin.register(CourseStudent)
 class CourseStudentAdmin(admin.ModelAdmin):
-    list_display = ['id', 'student', 'course', 'status']
-    search_fields = ['student', 'course', 'status']
+    list_display = ['id', 'user', 'course', 'status']
+    search_fields = ['user', 'course', 'status']
     list_filter = ['status']
 

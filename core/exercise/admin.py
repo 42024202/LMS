@@ -13,7 +13,7 @@ class SubmissionAdmin(admin.ModelAdmin):
 
 @admin.register(Grade)
 class GradeAdmin(admin.ModelAdmin):
-    list_display = ['score', 'exercise', 'grade_at']
+    list_display = ['score', 'submission', 'grade_at']
     list_filter = ['score']
     search_fields = ['score', 'feedback']
 

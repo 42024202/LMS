@@ -30,7 +30,7 @@ class Attendance(models.Model):
             )
 
     def __str__(self):
-        return f"{self.student.student.fisrtname} {self.shedule_session}"
+        return f"{self.student.user.username} {self.shedule_session}"
 
     class Meta:
         verbose_name = 'Посещение'
