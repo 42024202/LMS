@@ -19,7 +19,7 @@ class CourseViewSet(viewsets.ModelViewSet):
             return Course.objects.all()
         elif user.is_staff or getattr(user, "role", None) == "instructor":
             return Course.objects.filter(instructors__instructor=user)
-        return Course.objects.filter(students__student=user)
+        return Course.objects.filter(students__user=user)
 
     def list(self, request, *args, **kwargs):
         courses = self.get_queryset()

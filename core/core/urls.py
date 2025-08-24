@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework_nested import routers
+from django.conf import settings
+from django.conf.urls.static import static
 
 from course.views.index_view import CourseViewSet, ModuleViewSet, LessonViewSet
 from exercise.views.catalog_view import ExerciseViewSet, SubmissionViewSet, GradeViewSet
@@ -76,6 +78,6 @@ urlpatterns = [
     path("api/", include(exercises_router.urls)),
     path("api/", include(submissions_router.urls)),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 #handler404 = NotFoundView.as_view()
 
