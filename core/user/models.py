@@ -7,9 +7,9 @@ from django.contrib.auth.models import PermissionsMixin
 
 
 class MyUserRoleEnum(models.TextChoices):
-    STANDARD_USER = "standard", _("Обычный пользователь")
+    STANDARD_USER = "student", _("Учащийся")
     ADMIN = "admin", _("Админ")
-    TEACHER = "teacher", _("Преподователь")
+    TEACHER = "instructor", _("Преподователь")
 
 class MyUserManager(BaseUserManager):
     def create_user(self, username, email, password=None):
@@ -21,6 +21,7 @@ class MyUserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(username=username, email=email)
         user.set_password(password)
+        user.is_active = True
         user.save(using=self._db)
         return user
 
@@ -28,6 +29,8 @@ class MyUserManager(BaseUserManager):
         user = self.create_user(username=username, email=email, password=password)
         user.is_admin = True
         user.is_staff = True
+        user.is_active = True
+        user.role = MyUserRoleEnum.ADMIN
         user.is_superuser = True
         user.save(using=self._db)
         return user
