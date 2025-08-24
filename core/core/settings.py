@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'drf_yasg',
     'rest_framework',
+    'corsheaders',
 
     #app
     'user',
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -114,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'ru'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'Asia/Bishkek'
 
@@ -144,13 +147,20 @@ SIMPLE_JWT = {
 }
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#<<<<<<< Updated upstream
 AUTH_USER_MODEL = 'user.MyUser'
 
 
@@ -162,5 +172,6 @@ EMAIL_USE_SSL = False
 EMAIL_HOST_USER = 'tdastan.312@gmail.com'
 EMAIL_HOST_PASSWORD = 'qmcr fckv gcpp dcur'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-#=======
-#>>>>>>> Stashed changes
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ORIGIN_ALLOW_ALL = True
