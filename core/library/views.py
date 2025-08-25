@@ -49,3 +49,25 @@ class CourseBookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CourseBook.objects.all()
     serializer_class = CourseBookSerializer
     permission_classes = [permissions.IsAdminUser]
+
+
+class CourseBooksDetailedView(generics.ListAPIView):
+    """
+    API возвращает книги с дополнительной информацией о связи с курсом
+    GET /api/library/courses/{course_id}/books-detailed/
+    """
+    serializer_class = CourseBookSerializer  # Используем сериализатор связи
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['course', 'book__is_required']  # Фильтрация по обязательности
+    search_fields = ['book__title', 'book__author', 'recommended_chapters']
+
+    def get_queryset(self):
+        course_id = self.kwargs['course_id']
+        queryset = CourseBook.objects.filter(course_id=course_id).select_related('book')
+
+        # Проверка прав доступа (как в CourseBookListCreateView)
+        if not self.request.user.is_staff:
+            queryset = queryset.filter(course__students=self.request.user)
+
+        return queryset
