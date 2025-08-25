@@ -1,4 +1,5 @@
 from django.db import models
+from course.models.course import Course
 
 
 class Book(models.Model):
@@ -73,14 +74,14 @@ class Book(models.Model):
 
 class CourseBook(models.Model):
     course = models.ForeignKey(
-        "course.Course",
+        Course,
         on_delete=models.CASCADE,
         related_name="course_books",
         verbose_name="Курс",
         help_text="Курс, для которого предназначен учебник"
     )
     book = models.ForeignKey(
-        "Book",
+        Book,
         on_delete=models.CASCADE,
         related_name="course_books",
         verbose_name="Учебник",
@@ -114,3 +115,4 @@ class CourseBook(models.Model):
 
     def __str__(self):
         return f"{self.course.name} - {self.book.title}"
+
